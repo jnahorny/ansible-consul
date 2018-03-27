@@ -1,0 +1,7 @@
+{
+    "service": {
+        "name": "{{ consul_service_name }}",
+        "tags": {{ consul_service_tags | default([]) }},
+        "port": {{ consul_service_port }}
+    }
+}

@@ -1,0 +1,20 @@
+---
+- name: install consul service definition
+  block:
+  - name: ensure conf directory exists
+    file:
+      path: "{{ consul_conf_dir }}"
+      state: directory
+      mode: 0755
+
+  - name: create service definition
+    template:
+      src: "conf/service.json.j2"
+      dest: "{{ consul_conf_dir }}/{{ consul_service_name }}.json"
+      owner: "{{ consul_user }}"
+      group: "{{ consul_group }}"
+      mode: 0644
+    notify:
+      - reload consul-agent
+  
+  tags: service

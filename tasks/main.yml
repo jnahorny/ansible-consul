@@ -1,0 +1,12 @@
+---
+- name: set internal helper variables
+  import_tasks: set_fact.yml
+  tags: always
+
+- name: install specified consul version
+  import_tasks: install.yml
+  tags: install
+
+- name: configure agent
+  import_tasks: agent.yml
+  tags: agent

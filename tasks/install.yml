@@ -1,0 +1,71 @@
+---
+- name: Find consul version
+  shell: consul --version | sed -n 's/.*v\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p'
+  register: consul_current_ver
+  ignore_error: true
+  changed_when: false
+
+- name: reinstall consul
+  when: consul_current_ver.stdout != consul_ver or consul_force_reinstall
+  block:
+    - name: remove old binary install
+      file: 
+        path: "{{ consul_bin_dir }}"
+        state: absent
+
+    - name: install unzip
+      apt:
+        name: zip
+        state: present
+
+    - name: create consul directory structure
+      with_items:
+        - "{{ consul_bin_dir }}"
+        - "{{ consul_conf_dir }}"
+        - "{{ consul_data_dir }}"
+        - "{{ consul_systemd_dir }}"
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+
+    - name: download consul
+      get_url:
+        url: '{{consul_url}}'
+        dest: /tmp/{{consul_zip}}
+        checksum: '{{consul_checksum}}'
+        mode: 0644
+
+    - name: unarchive consul
+      unarchive:
+        remote_src: yes
+        src: /tmp/{{consul_zip}}
+        dest: '{{consul_bin_dir}}'
+        creates: '{{consul_bin_dir}}/consul'
+  always:
+    - name: cleanup
+      file:
+        path: /tmp/{{consul_zip}}
+        state: absent
+
+- name: install systemd service file
+  template:
+    src: "systemd/consul-agent.service.j2"
+    dest: "{{ consul_systemd_dir }}/consul-agent.service"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0644
+  notify:
+    - enable consul-agent
+
+- name: create symlink
+  with_items:
+    - { src: "{{ consul_bin_dir }}/consul", dest: "{{ consul_os_install_dir }}/consul"}
+    - { src: "{{ consul_systemd_dir }}/consul-agent.service", dest: "{{ consul_os_systemd_dir }}/consul-agent.service"}
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    force: yes
+  notify:
+    - enable consul-agent

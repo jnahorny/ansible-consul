@@ -1,0 +1,24 @@
+---
+- set_fact:
+    _consul_node_role: "{{ hostvars[inventory_hostname]['consul_node_role'] | default('client') }}"
+    _consul_bind_ipv4: "{{ ansible_all_ipv4_addresses | ipaddr(consul_bind_ip_range) | first }}"
+
+- set_fact:
+    _consul_is_server: "{{ _consul_node_role in ['bootstrap', 'server'] }}"
+    _consul_is_bootstrap: "{{ _consul_node_role | match('bootstrap') }}"
+
+- set_fact:
+    _consul_servers: "{{ _consul_servers + [hostvars[item]['_consul_bind_ipv4']] }}"
+  with_items: "{{ ansible_play_hosts }}"
+  when: hostvars[item]['_consul_is_server']
+
+  # - debug:
+  #     var: _consul_servers | sort
+  # - debug:
+  #     var: _consul_node_role
+  # - debug:
+  #     var: _consul_bind_ipv4
+  # - debug:
+  #     var: _is_server
+  # - debug:
+  #     var: _is_bootstrap

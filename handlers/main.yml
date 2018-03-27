@@ -1,0 +1,15 @@
+- name: enable consul-agent
+  systemd:
+    name: consul-agent
+    daemon_reload: yes
+    enabled: yes
+
+- name: reload consul-agent
+  systemd:
+    name: consul-agent
+    state: reloaded
+
+- name: restart consul-agent
+  systemd:
+    name: consul-agent
+    state: restarted

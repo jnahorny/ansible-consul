@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Hitoshi Okonogi
+  description: role to install consul and configure
+  company: hitotito
+  license: MIT
+  min_ansible_version: 2.0
+  platforms:
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+  galaxy_tags:
+    - kv
+    - CP

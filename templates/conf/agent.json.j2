@@ -1,0 +1,19 @@
+{
+{% if _consul_is_server %}
+  "server": true,
+  "bootstrap_expect": {{ _consul_servers | length }},
+  "ui": true,
+{% endif %}
+  "addresses": {
+    "http": "0.0.0.0"
+  },
+  "ports": {
+    "http": {{ consul_ports_http }}
+  },
+  "bind_addr": "{{ _consul_bind_ipv4 }}",
+  "datacenter": "{{ consul_datacenter }}",
+  "data_dir": "{{ consul_data_dir }}",
+  "log_level": "{{ consul_log_level }}",
+  "node_name": "{{ ansible_hostname }}",
+  "retry_join": {{ _consul_servers | sort | to_json }}
+}
