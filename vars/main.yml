@@ -1,22 +1,9 @@
 ---
+# consul download link & checksum
 consul_name : "consul_{{consul_ver}}_{{consul_platform}}"
 consul_zip: "{{ consul_name }}.zip"
-
-# consul install directory structure
-consul_bin_dir: "{{ consul_dir }}/bin"
-consul_conf_dir: "{{ consul_dir }}/conf"
-consul_data_dir: "{{ consul_dir }}/data"
-consul_systemd_dir: "{{ consul_dir }}/systemd"
-
-# consul download link & checksum
 consul_url: "{{ consul_mirror }}/{{ consul_ver }}/{{ consul_zip }}"
 consul_checksum: "{{consul_checksums[consul_ver][consul_platform]}}"
-
-# consul config defaults
-consul_bind_ip_range: 192.168.101.0/24
-consul_datacenter: vagrant
-consul_log_level: INFO
-consul_ports_http: 8500
 
 # private variables initialization
 _consul_servers: []
