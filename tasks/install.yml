@@ -2,7 +2,7 @@
 - name: Find consul version
   shell: consul --version | sed -n 's/.*v\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p'
   register: consul_current_ver
-  ignore_error: true
+  ignore_errors: true
   changed_when: false
 
 - name: reinstall consul
@@ -50,7 +50,7 @@
 
 - name: install systemd service file
   template:
-    src: "systemd/consul-agent.service.j2"
+    src: "consul-agent.service.j2"
     dest: "{{ consul_systemd_dir }}/consul-agent.service"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"

@@ -9,7 +9,7 @@
 
   - name: create service definition
     template:
-      src: "conf/service.json.j2"
+      src: "service.json.j2"
       dest: "{{ consul_conf_dir }}/{{ consul_service_name }}.json"
       owner: "{{ consul_user }}"
       group: "{{ consul_group }}"
