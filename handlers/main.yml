@@ -1,9 +1,3 @@
-- name: enable consul-agent
-  systemd:
-    name: consul-agent
-    daemon_reload: yes
-    enabled: yes
-
 - name: reload consul-agent
   systemd:
     name: consul-agent

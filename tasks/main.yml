@@ -1,6 +1,6 @@
 ---
 - name: set internal helper variables
-  import_tasks: set_fact.yml
+  import_tasks: set_facts.yml
   tags: always
 
 - name: install specified consul version

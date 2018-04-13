@@ -1,7 +1,12 @@
 {
-    "service": {
-        "name": "{{ consul_service_name }}",
-        "tags": {{ consul_service_tags | default([]) }},
-        "port": {{ consul_service_port }}
-    }
+    "services": [
+{% for port in consul_service_ports %}
+        {
+            "name": "{{ consul_service_name }}",
+            "tags": {{ consul_service_tags | default([]) | to_json }},
+            "port": {{ port }}
+        }{% if not loop.last %},{% endif %}
+
+{% endfor %}
+    ]
 }

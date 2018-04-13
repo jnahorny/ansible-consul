@@ -56,7 +56,7 @@
     group: "{{ consul_group }}"
     mode: 0644
   notify:
-    - enable consul-agent
+    - restart consul-agent
 
 - name: create symlink
   with_items:
@@ -67,5 +67,9 @@
     dest: "{{ item.dest }}"
     state: link
     force: yes
-  notify:
-    - enable consul-agent
+
+- name: Enable systemd service
+  systemd:
+    name: consul-agent
+    daemon_reload: yes
+    enabled: yes

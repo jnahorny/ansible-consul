@@ -11,14 +11,3 @@
     _consul_servers: "{{ _consul_servers + [hostvars[item]['_consul_bind_ipv4']] }}"
   with_items: "{{ ansible_play_hosts }}"
   when: hostvars[item]['_consul_is_server']
-
-  # - debug:
-  #     var: _consul_servers | sort
-  # - debug:
-  #     var: _consul_node_role
-  # - debug:
-  #     var: _consul_bind_ipv4
-  # - debug:
-  #     var: _is_server
-  # - debug:
-  #     var: _is_bootstrap
