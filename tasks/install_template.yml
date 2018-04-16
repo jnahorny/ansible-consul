@@ -1,0 +1,83 @@
+---
+- name: Find consul-template version
+  shell: consul-template --version 2>&1 | sed -n 's/.*v\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p'
+  register: consul_template_current_ver
+  ignore_errors: true
+  changed_when: false
+
+- name: Reinstall consul-template
+  when: consul_template_current_ver.stdout != consul_template_ver or consul_template_force_reinstall
+  block:
+    - name: Remove old binary install
+      file:
+        path: "{{ consul_bin_dir }}/consul-template"
+        state: absent
+
+    - name: Create consul directory structure
+      with_items:
+        - "{{ consul_bin_dir }}"
+        - "{{ consul_conf_template_dir }}"
+        - "{{ consul_conf_template_tmpld_dir }}"
+        - "{{ consul_systemd_dir }}"
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+
+    - name: Download consul-template
+      get_url:
+        url: "{{ consul_template_url }}"
+        dest: "/tmp/{{ consul_template_archive }}"
+        checksum: "{{ consul_template_checksum }}"
+        mode: 0644
+
+    - name: Unarchive consul-template
+      unarchive:
+        remote_src: yes
+        src: "/tmp/{{ consul_template_archive }}"
+        dest: "{{ consul_bin_dir }}"
+        creates: "{{ consul_bin_dir }}/consul-template"
+
+  always:
+    - name: Cleanup
+      file:
+        path: "/tmp/{{ consul_template_archive }}"
+        state: absent
+
+- name: Install consul-template.hcl configuration file
+  template:
+    src: "consul-template.hcl.j2"
+    dest: "{{ consul_conf_template_dir }}/consul-template.hcl"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0644
+  notify:
+    - restart consul-template
+
+- name: Install consul-template systemd service file
+  template:
+    src: "consul-template.service.j2"
+    dest: "{{ consul_systemd_dir }}/consul-template.service"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0644
+  notify:
+    - restart consul-template
+
+- name: create symlink
+  with_items:
+    - { src: "{{ consul_bin_dir }}/consul-template", dest: "{{ consul_os_install_dir }}/consul-template"}
+    - { src: "{{ consul_systemd_dir }}/consul-template.service", dest: "{{ consul_os_systemd_dir }}/consul-template.service"}
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    force: yes
+  notify:
+    - restart consul-template
+
+- name: Enable systemd service
+  systemd:
+    name: consul-template
+    daemon_reload: yes
+    enabled: yes

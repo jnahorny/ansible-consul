@@ -2,7 +2,7 @@
 - name: copy consul-agent configuration file
   template:
     src: "agent.json.j2"
-    dest: "{{ consul_conf_dir }}/agent.json"
+    dest: "{{ consul_conf_agent_dir }}/agent.json"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
     mode: 0644

@@ -1,0 +1,18 @@
+[Unit]
+Description=Consul Template
+Requires=network-online.target
+After=network-online.target consul-agent.service vault.service
+
+[Service]
+User=root
+Group=root
+EnvironmentFile=-/etc/sysconfig/consul-template
+ExecStart={{ consul_os_install_dir }}/consul-template $OPTIONS -config={{ consul_conf_template_dir }}/consul-template.hcl -config={{ consul_conf_template_tmpld_dir }}
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

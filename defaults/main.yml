@@ -1,30 +1,42 @@
 ---
-consul_force_reinstall: false
-consul_ver : '1.0.6'
-consul_platform : linux_amd64
-consul_mirror : https://releases.hashicorp.com/consul
-
+# OS targets
 consul_os_install_dir: /usr/local/bin
 consul_os_systemd_dir: /etc/systemd/system
 consul_os_pid_dir: /run
-
-consul_group: root
-consul_user: root
 
 # consul install directory structure
 consul_dir: /srv/consul
 consul_bin_dir: "{{ consul_dir }}/bin"
 consul_conf_dir: "{{ consul_dir }}/conf"
+consul_conf_agent_dir: "{{ consul_conf_dir }}/agent"
+consul_conf_template_dir: "{{ consul_conf_dir }}/template"
+consul_conf_template_tmpld_dir: "{{ consul_conf_template_dir }}/tmpl.d"
 consul_data_dir: "{{ consul_dir }}/data"
 consul_systemd_dir: "{{ consul_dir }}/systemd"
+consul_templates_dir: "{{ consul_dir }}/templates"
+
+consul_group: root
+consul_user: root
+
+# consul binary
+consul_force_reinstall: false
+consul_ver : '1.0.6'
+consul_platform : linux_amd64
+consul_mirror : https://releases.hashicorp.com/consul
+
+# consul-template binary
+consul_template_force_reinstall: false
+consul_template_ver: '0.19.4'
+consul_template_platform: linux_amd64
+consul_template_mirror: https://releases.hashicorp.com/consul-template
 
 # consul config defaults
 consul_bind_ip_range: 192.168.101.0/24
-consul_datacenter: vagrant
+consul_datacenter: SFO01
 consul_log_level: INFO
 consul_ports_http: 8500
 
-
+##### CHECKSUMS #####
 consul_checksums:
    # https://releases.hashicorp.com/consul/1.0.0/consul_1.0.0_SHA256SUMS
   '1.0.0' :
@@ -110,3 +122,8 @@ consul_checksums:
     solaris_amd64: sha256:c30ae90caa4d92982baa7dd5c6871ea7495f569048b33dd00ece3d6c267a72b6
     windows_386: sha256:fc1f08a860a63e94f7edcd763b6773ec8f5f815f03b10806363879f24eb2c2e0
     windows_amd64: sha256:33b95f2cf7387deac27d9f78b768b376919770fc5cc61b9437524f1a1a608c8a
+
+# TODO - pull this information from mirror
+consul_template_checksums:
+  '0.19.4':
+    linux_amd64: sha256:d8f349a1cc827f3bfe3c707a361739ba91dbb6c16dad445cb0226d34be19c47e

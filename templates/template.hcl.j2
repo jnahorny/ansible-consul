@@ -1,0 +1,22 @@
+# check https://github.com/hashicorp/consul-template for more refererence
+template {
+  source = "{{ consul_templates_dir}}/{{ consul_service_template_name }}.ctmpl"
+  destination = "{{ consul_service_template_dest }}"
+  create_dest_dirs = true
+  perms = 0644
+  backup = true
+
+  #contents = ""
+
+  command = "{{ consul_service_template_command }}"
+  command_timeout = "60s"
+  error_on_missing_key = false
+
+  left_delimiter  = "{{ '{{' }}"
+  right_delimiter = "{{ '}}' }}"
+
+  wait {
+    min = "2s"
+    max = "10s"
+  }
+}

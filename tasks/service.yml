@@ -3,18 +3,16 @@
   block:
   - name: ensure conf directory exists
     file:
-      path: "{{ consul_conf_dir }}"
+      path: "{{ consul_conf_agent_dir }}"
       state: directory
       mode: 0755
 
   - name: create service definition
     template:
       src: "service.json.j2"
-      dest: "{{ consul_conf_dir }}/{{ consul_service_name }}.json"
+      dest: "{{ consul_conf_agent_dir }}/{{ consul_service_name }}.json"
       owner: "{{ consul_user }}"
       group: "{{ consul_group }}"
       mode: 0644
     notify:
       - reload consul-agent
-  
-  tags: service

@@ -3,10 +3,14 @@
   import_tasks: set_facts.yml
   tags: always
 
-- name: install specified consul version
-  import_tasks: install.yml
-  tags: install
+- name: install specified consul agent
+  import_tasks: install_agent.yml
+  tags: agent
 
 - name: configure agent
   import_tasks: agent.yml
   tags: agent
+
+- name: install specified consul-template
+  import_tasks: install_template.yml
+  tags: template

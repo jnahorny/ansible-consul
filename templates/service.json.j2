@@ -2,9 +2,20 @@
     "services": [
 {% for port in consul_service_ports %}
         {
+            "id": "{{ consul_service_name }}-{{ port }}",
             "name": "{{ consul_service_name }}",
             "tags": {{ consul_service_tags | default([]) | to_json }},
-            "port": {{ port }}
+            "port": {{ port }},
+            "check": {
+                "id": "check-{{consul_service_name }}-{{ port }}",
+                "name": "HTTP on port {{ port }}",
+                "http": "http://localhost:{{ port }}/",
+                "tls_skip_verify": false,
+                "method": "GET",
+                "header": {},
+                "interval": "10s",
+                "timeout": "1s"
+            }
         }{% if not loop.last %},{% endif %}
 
 {% endfor %}
