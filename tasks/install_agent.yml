@@ -1,12 +1,6 @@
 ---
-- name: Find consul version
-  shell: consul --version 2>&1 | sed -n 's/.*v\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p'
-  register: consul_current_ver
-  ignore_errors: true
-  changed_when: false
-
 - name: reinstall consul
-  when: consul_current_ver.stdout != consul_ver or consul_force_reinstall
+  when: hostvars[inventory_hostname].ansible_local.hitotito_consul.consul.version != consul_ver or consul_force_reinstall
   block:
     - name: remove old binary install
       file: 
@@ -59,14 +53,16 @@
     - restart consul-agent
 
 - name: create symlink
-  with_items:
-    - { src: "{{ consul_bin_dir }}/consul", dest: "{{ consul_os_install_dir }}/consul"}
-    - { src: "{{ consul_systemd_dir }}/consul-agent.service", dest: "{{ consul_os_systemd_dir }}/consul-agent.service"}
   file:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     state: link
     force: yes
+  with_items:
+    - src: "{{ consul_bin_dir }}/consul"
+      dest: "{{ consul_os_install_dir }}/consul"
+    - src: "{{ consul_systemd_dir }}/consul-agent.service"
+      dest: "{{ consul_os_systemd_dir }}/consul-agent.service"
   notify:
     - restart consul-agent
 

@@ -13,3 +13,8 @@ galaxy_info:
   galaxy_tags:
     - kv
     - CP
+
+dependencies:
+  - role: hitotito.custom-facts
+    custom_facts_name: hitotito_consul
+    custom_facts_file: consul.fact
