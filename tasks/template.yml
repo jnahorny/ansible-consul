@@ -5,7 +5,7 @@
       file:
         path: "{{ item }}"
         state: directory
-        mode: 0755
+        mode: 0750
       with_items:
         - "{{ consul_conf_template_tmpld_dir }}"
         - "{{ consul_templates_dir }}"
@@ -16,7 +16,7 @@
         dest: "{{ consul_conf_template_tmpld_dir }}/{{ consul_service_template_name }}.hcl"
         owner: "{{ consul_user }}"
         group: "{{ consul_group }}"
-        mode: 0644
+        mode: 0640
       notify:
         - reload consul-template
 
@@ -26,6 +26,6 @@
         dest: "{{ consul_templates_dir }}/{{ consul_service_template_name }}.ctmpl"
         owner: "{{ consul_user }}"
         group: "{{ consul_group }}"
-        mode: 0644
+        mode: 0640
       notify:
         - reload consul-template

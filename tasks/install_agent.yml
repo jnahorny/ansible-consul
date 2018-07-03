@@ -18,10 +18,13 @@
         - "{{ consul_conf_agent_dir }}"
         - "{{ consul_data_dir }}"
         - "{{ consul_systemd_dir }}"
+        - "{{ consul_os_pid_dir }}"
       file:
         path: "{{ item }}"
         state: directory
-        mode: 0755
+        mode: 0750
+        owner: "{{ consul_user }}"
+        group: "{{ consul_group }}"
 
     - name: download consul
       get_url:
@@ -36,6 +39,8 @@
         src: /tmp/{{consul_zip}}
         dest: '{{consul_bin_dir}}'
         creates: '{{consul_bin_dir}}/consul'
+        group: '{{ consul_group }}'
+        owner: '{{ consul_user }}'
   always:
     - name: cleanup
       file:
@@ -48,7 +53,7 @@
     dest: "{{ consul_systemd_dir }}/consul-agent.service"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-    mode: 0644
+    mode: 0640
   notify:
     - restart consul-agent
 

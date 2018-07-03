@@ -6,6 +6,8 @@
       path: "{{ consul_conf_agent_dir }}"
       state: directory
       mode: 0755
+      owner: "{{ consul_user }}"
+      group: "{{ consul_group }}"
 
   - name: create service definition
     template:

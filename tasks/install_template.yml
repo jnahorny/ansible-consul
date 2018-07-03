@@ -16,14 +16,16 @@
       file:
         path: "{{ item }}"
         state: directory
-        mode: 0755
+        mode: 0750
+        owner: "{{ consul_user }}"
+        group: "{{ consul_group }}"
 
     - name: Download consul-template
       get_url:
         url: "{{ consul_template_url }}"
         dest: "/tmp/{{ consul_template_archive }}"
         checksum: "{{ consul_template_checksum }}"
-        mode: 0644
+        mode: 0640
 
     - name: Unarchive consul-template
       unarchive:
@@ -31,6 +33,8 @@
         src: "/tmp/{{ consul_template_archive }}"
         dest: "{{ consul_bin_dir }}"
         creates: "{{ consul_bin_dir }}/consul-template"
+        group: '{{ consul_group }}'
+        owner: '{{ consul_user }}'
 
   always:
     - name: Cleanup
@@ -44,7 +48,7 @@
     dest: "{{ consul_conf_template_dir }}/consul-template.hcl"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-    mode: 0644
+    mode: 0640
   notify:
     - restart consul-template
 
@@ -54,7 +58,7 @@
     dest: "{{ consul_systemd_dir }}/consul-template.service"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-    mode: 0644
+    mode: 0640
   notify:
     - restart consul-template
 

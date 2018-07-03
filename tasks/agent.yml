@@ -5,6 +5,16 @@
     dest: "{{ consul_conf_agent_dir }}/agent.json"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-    mode: 0644
+    mode: 0640
+  notify:
+    - restart consul-agent
+- name: copy gossip encryption configuration file
+  when: consul_gossip_encryption_key is defined
+  template:
+    src: "encryption.json.j2"
+    dest: "{{ consul_conf_agent_dir }}/encryption.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0640
   notify:
     - restart consul-agent

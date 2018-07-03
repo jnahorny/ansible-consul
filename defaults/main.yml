@@ -36,6 +36,9 @@ consul_datacenter: SFO01
 consul_log_level: INFO
 consul_ports_http: 8500
 
+# to enable consul gossip encryption simply define a variable:
+# consul_gossip_encryption_key: "o3GQxsj0skowrZamiScm6g=="
+
 ##### CHECKSUMS #####
 consul_checksums:
    # https://releases.hashicorp.com/consul/1.0.0/consul_1.0.0_SHA256SUMS
